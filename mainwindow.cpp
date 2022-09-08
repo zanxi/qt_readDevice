@@ -40,6 +40,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    workerDev->ready = false;
+    QThread::msleep(500);
+    //workerDev->
     delete ui;
 }
 
