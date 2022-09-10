@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->tableWidget->setRowCount(1);
     ui->tableWidget->setColumnCount(4);
+    //ui->tableWidget->widt();
 
      ui->tableWidget->setHorizontalHeaderLabels(QStringList()<<"BA"<<"RMV"<<"RDV"<<"Y");
      ui->tableWidget->setVerticalHeaderLabels(QStringList()<<" "<<" "<<" "<<" ");
@@ -81,11 +82,26 @@ void MainWindow::ActionTimer()
     if(Y>= BA && getValueRDV_sec>sec)
     {
         ui->lineEdit_MessageSystem->setText("Значение выше ВА");
+
+        ui->listWidget->addItem("Значение выше ВА: Y="+
+                                tr("%1").arg(tr("%1").arg(Y))+
+                                "; RDV="+
+                                tr("%1").arg(tr("%1").arg(getValueRDV_sec*1000))+
+                                "; BA="+
+                                tr("%1").arg(tr("%1").arg(BA))
+                                );
         //ui->lineEdit_MessageSystem->setBackgroundRole(Qt::red);
         //ui->lineEdit_MessageSystem->foregroundRole();
     }
     else{
         ui->lineEdit_MessageSystem->setText("сработка верхней аварийной уставки - не произошло (NoNoNoNoNo)");
+        ui->listWidget->addItem("сработка верхней аварийной уставки - не произошло (NoNoNoNoNo): Y="+
+                                tr("%1").arg(tr("%1").arg(Y))+
+                                "; RDV="+
+                                tr("%1").arg(tr("%1").arg(getValueRDV_sec*1000))+
+                                "; BA="+
+                                tr("%1").arg(tr("%1").arg(BA))
+                                );
         //ui->lineEdit_MessageSystem->setBackgroundRole(Qt::yellow);
     }
 
