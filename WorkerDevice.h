@@ -34,6 +34,11 @@ void run();
 
   clock_t t1, t2, t3;
 
+  QMutex mutex;
+  QMap<int,QString> values;
+  QMap<QString,int> vars;
+  QDateTime lastOperation=QDateTime::currentDateTime();
+
 
 
 public:

@@ -38,12 +38,14 @@ void WorkerDevice::makeStep()
 {
 
     Y = rand()%(2*BA);
+    //values.insert(var.id,"not read");
 }
 
 void WorkerDevice::run()
 {
    srand(time(NULL));
     //return;    
+
 
     while(ready)
     {
@@ -56,7 +58,10 @@ void WorkerDevice::run()
             t2 = std::clock();
         }
 
+        mutex.lock();
         makeStep();
+
+        mutex.unlock();
         QThread::msleep(100);
     }
 
