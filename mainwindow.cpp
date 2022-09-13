@@ -34,33 +34,59 @@ MainWindow::MainWindow(QWidget *parent)
      //QTimer *time = new QTimer(this);
      connect(timer, SIGNAL(timeout()),this,SLOT(ActionTimer()));
 
-     workerDev = new WorkerDevice(); // запуск чтения с устройства
-     workerDev->start();
+     timer->start(1000);
+
+
+     //workerDev = new WorkerDevice(); // запуск чтения с устройства
+     //workerDev->start();
 
 }
 
 MainWindow::~MainWindow()
 {
-    workerDev->ready = false;
+    //workerDev->ready = false;
     QThread::msleep(500);
     //workerDev->
     delete ui;
 }
 
+
 void MainWindow::ActionTimer()
 {
+    double sec = (QVariant(ui->lineEdit_RDV->text()).toInt()*1.0)/1000.0;
+    BA = QVariant(ui->lineEdit_BA->text()).toInt();
+    RDV = QVariant(ui->lineEdit_RDV->text()).toInt();
+    RMV = QVariant(ui->lineEdit_RMV->text()).toInt();
 
-    int BA = QVariant(ui->lineEdit_BA->text()).toInt();
-    workerDev->SetValue(BA); // текущая уставка, костыльная установка случайной генерации Y
+    if(Y0!=Y){
+        t2 = std::clock();
+        getValueRDV_sec =  ((double)(t2-t1) / CLOCKS_PER_SEC);
+    }
+    else
+    {
 
-    int Y = workerDev->GetValue(); // рандомный костыль для значений Y
+    }
+
+    Y=Y0;
+
+    UpdateInfo();
+
+    // --------------------------------------------------------
+
+    // состояние сработки устройства
+    MsgDev(sec);
+
+}
+
+void MainWindow::UpdateInfo()
+{
     QTableWidgetItem *itm_Y = new QTableWidgetItem(tr("%1").arg(tr("%1").arg(Y)));
-    QTableWidgetItem *itm_RMV = new QTableWidgetItem(tr("%1").arg(tr("%1").arg(Y-BA)));
+    QTableWidgetItem *itm_RMV = new QTableWidgetItem(tr("%1").arg(tr("%1").arg(RMV)));
     ui->tableWidget->setItem(0,1,itm_RMV);
     ui->tableWidget->setItem(0,3,itm_Y);
 
     ui->lineEdit_Y->setText(tr("%1").arg(tr("%1").arg(Y)));
-    ui->lineEdit_RMV->setText(tr("%1").arg(tr("%1").arg(Y-BA)));
+    ui->lineEdit_RMV->setText(tr("%1").arg(tr("%1").arg(RMV)));
 
 
     QTableWidgetItem *itm_BA = new QTableWidgetItem(tr("%1").arg(ui->lineEdit_BA->text()));
@@ -69,17 +95,19 @@ void MainWindow::ActionTimer()
     ui->tableWidget->setItem(0,0,itm_BA);
     ui->tableWidget->setItem(0,2,itm_RDV);
 
-
-
-    double sec = (QVariant(ui->lineEdit_RDV->text()).toInt()*1.0)/1000.0;
-    double getValueRDV_sec = workerDev->GetValue_RDV();
-
-    //ui->lineEdit_GetValueRDV->setText(QString::numeric(getValueRDV_sec));
     ui->lineEdit_GetValueRDV->setText(tr("%1").arg(tr("%1").arg(getValueRDV_sec*1000)));
 
-    //int Y = QVariant(ui->lineEdit_BA->text()).toInt();
-    //if(Y>= BA && true)
-    if(Y>= BA && getValueRDV_sec>sec)
+    if(ui->listWidget->count()>20)
+    {
+        ui->listWidget->clear();
+
+    }
+
+}
+
+void  MainWindow::MsgDev(double  sec)
+{
+    if(Y>= BA && getValueRDV_sec>sec &&RMV<(Y-BA))
     {
         ui->lineEdit_MessageSystem->setText("Значение выше ВА");
 
@@ -105,7 +133,6 @@ void MainWindow::ActionTimer()
         //ui->lineEdit_MessageSystem->setBackgroundRole(Qt::yellow);
     }
 
-
 }
 
 void MainWindow::TimeElapsed()
@@ -127,5 +154,16 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_pushButton_2_clicked()
 {
     timer->stop();
+}
+
+
+void MainWindow::on_lineEdit_Y_textChanged(const QString &arg1)
+{
+     if(!ui->lineEdit_Y->text().isEmpty())
+     {
+         Y0=ui->lineEdit_Y->text().toInt();
+         t1 = std::clock();
+         getValueRDV_sec = 0;
+     }
 }
 

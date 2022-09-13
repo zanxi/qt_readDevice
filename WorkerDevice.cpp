@@ -21,9 +21,7 @@ int WorkerDevice::GetValue()
 double WorkerDevice::GetValue_RDV()
 {
     t3 = t1 - t2;                           // Разница между метками
-
-       double sec = ((double)t3 / CLOCKS_PER_SEC);
-
+    double sec = ((double)t3 / CLOCKS_PER_SEC);
     return sec;
 }
 
@@ -31,8 +29,6 @@ void WorkerDevice::SetValue(int BA)
 {
     this->BA = BA;
 }
-
-
 
 void WorkerDevice::makeStep()
 {
